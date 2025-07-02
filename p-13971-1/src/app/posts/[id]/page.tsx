@@ -38,7 +38,10 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
       <div className="flex gap-2">
         <button
           className="p-2 rounded border"
-          onClick={() => deletePost(post.id)}
+          onClick={() =>
+            confirm(`${post.id}번 글을 정말로 삭제하시겠습니까?`) &&
+            deletePost(post.id)
+          }
         >
           삭제
         </button>
