@@ -6,6 +6,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 
+function usePost(id: number) {
+  const [post, setPost] = useState<PostWithContentDto | null>(null);
+
+  useEffect(() => {
+    apiFetch(`/api/v1/posts/${id}`)
+      .then(setPost)
+      .catch((error) => {
+        alert(`${error.resultCode} : ${error.msg}`);
+      });
+  }, []);
+
+  return {
+    post,
+  };
+}
+
 function PostInfo({ post }: { post: PostWithContentDto }) {
   const router = useRouter();
 
@@ -153,18 +169,13 @@ function PostCommentWriteAndList({
 export default function Page({ params }: { params: Promise<{ id: number }> }) {
   const { id } = use(params);
 
-  const [post, setPost] = useState<PostWithContentDto | null>(null);
+  const { post } = usePost(id);
+
   const [postComments, setPostComments] = useState<PostCommentDto[] | null>(
     null
   );
 
   useEffect(() => {
-    apiFetch(`/api/v1/posts/${id}`)
-      .then(setPost)
-      .catch((error) => {
-        alert(`${error.resultCode} : ${error.msg}`);
-      });
-
     apiFetch(`/api/v1/posts/${id}/comments`)
       .then(setPostComments)
       .catch((error) => {
