@@ -1,8 +1,17 @@
 export type PostDto = {
-    id: number;
-    title: string;
-  };
-  
+  id: number;
+  createDate: string;
+  modifyDate: string;
+  title: string;
+};
+
 export type PostWithContentDto = PostDto & {
-    content: string;
-  };
+  content: string;
+};
+
+export type PostCommentDto = {
+  id: number;
+  createDate: string;
+  modifyDate: string;
+  content: string;
+};
