@@ -1,7 +1,7 @@
 "use client";
 
 import { apiFetch } from "@/lib/backend/client";
-import { PostDto } from "@/type/post";
+import type { PostDto } from "@/type/post";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -21,7 +21,9 @@ export default function Page() {
       <ul>
         {posts.map((post) => (
           <li key={post.id}>
-            <Link href={`/posts/${post.id}`}>{post.title}</Link>
+            <Link href={`/posts/${post.id}`}>
+              {post.id} : {post.title}
+            </Link>
           </li>
         ))}
       </ul>
