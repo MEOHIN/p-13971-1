@@ -11,7 +11,9 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
   const router = useRouter();
 
   const [post, setPost] = useState<PostWithContentDto | null>(null);
-  const [postComments, setPostComments] = useState<PostCommentDto[] | null>([]);
+  const [postComments, setPostComments] = useState<PostCommentDto[] | null>(
+    null
+  );
 
   const deletePost = (id: number) => {
     apiFetch(`/api/v1/posts/${id}`, {
