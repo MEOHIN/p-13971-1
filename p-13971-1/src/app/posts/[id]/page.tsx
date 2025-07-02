@@ -1,12 +1,12 @@
 "use client";
 
-import { PostDto } from "@/type/post";
+import { PostDto, PostWithContentDto } from "@/type/post";
 import { use, useEffect, useState } from "react";
 
 export default function Page({ params }: { params: Promise<{ id: number }> }) {
   const { id } = use(params);
 
-  const [post, setPost] = useState<PostDto | null>(null);
+  const [post, setPost] = useState<PostWithContentDto | null>(null);
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/v1/posts/${id}`)
