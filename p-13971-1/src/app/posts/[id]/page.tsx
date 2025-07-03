@@ -174,7 +174,12 @@ function PostCommentListItem({
   comment: PostCommentDto;
   postCommentsState: ReturnType<typeof usePostComments>;
 }) {
+  const [modifyMode, setModifyMode] = useState(false);
   const { deleteComment: _deleteComment } = postCommentsState;
+
+  const toggleModifyMode = () => {
+    setModifyMode(!modifyMode);
+  };
 
   const deleteComment = (commentId: number) => {
     if (!confirm(`${commentId}번 댓글을 정말로 삭제하시겠습니까?`)) return;
@@ -185,8 +190,12 @@ function PostCommentListItem({
   };
 
   return (
-    <li>
-      {comment.id} : {comment.content}
+    <li className="flex gap-2 items-center">
+      <span>{comment.id} :</span>
+      {!modifyMode && <span>{comment.content}</span>}
+      <button className="p-2 rounded border" onClick={toggleModifyMode}>
+        수정
+      </button>
       <button
         className="p-2 rounded border"
         onClick={() => deleteComment(comment.id)}
@@ -215,7 +224,7 @@ function PostCommentList({
       )}
 
       {postComments != null && postComments.length > 0 && (
-        <ul>
+        <ul className="mt-2 flex flex-col gap-2">
           {postComments.map((comment) => (
             <PostCommentListItem
               key={comment.id}
