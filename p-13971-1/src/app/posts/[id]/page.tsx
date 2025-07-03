@@ -70,7 +70,6 @@ function usePostComments(id: number) {
   };
 
   return {
-    id,
     postComments,
     deleteComment,
     writeComment,
@@ -114,7 +113,7 @@ function PostCommentWrite({
 }: {
   postCommentsState: ReturnType<typeof usePostComments>;
 }) {
-  const { id, writeComment } = postCommentsState;
+  const { writeComment } = postCommentsState;
 
   const handleCommentWriteFormSubmit = (
     e: React.FormEvent<HTMLFormElement>
@@ -149,7 +148,7 @@ function PostCommentWrite({
 
   return (
     <>
-      <h2>{id}번글에 대한 댓글 작성</h2>
+      <h2>댓글 작성</h2>
 
       <form className="p-2" onSubmit={handleCommentWriteFormSubmit}>
         <textarea
@@ -172,7 +171,7 @@ function PostCommentList({
 }: {
   postCommentsState: ReturnType<typeof usePostComments>;
 }) {
-  const { id, postComments, deleteComment: _deleteComment } = postCommentsState;
+  const { postComments, deleteComment: _deleteComment } = postCommentsState;
 
   const deleteComment = (commentId: number) => {
     if (!confirm(`${commentId}번 댓글을 정말로 삭제하시겠습니까?`)) return;
@@ -186,7 +185,7 @@ function PostCommentList({
 
   return (
     <>
-      <h2>{id}번 글에 대한 댓글 목록</h2>
+      <h2>댓글 목록</h2>
 
       {postComments != null && postComments.length == 0 && (
         <div>댓글이 없습니다.</div>
