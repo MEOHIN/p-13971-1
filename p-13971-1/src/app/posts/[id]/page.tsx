@@ -42,11 +42,7 @@ function usePostComments(id: number) {
       });
   }, []);
 
-  const deleteComment = (
-    id: number,
-    commentId: number,
-    onSuccess: (data: any) => void
-  ) => {
+  const deleteComment = (commentId: number, onSuccess: (data: any) => void) => {
     apiFetch(`/api/v1/posts/${id}/comments/${commentId}`, {
       method: "DELETE",
     }).then((data) => {
@@ -58,11 +54,7 @@ function usePostComments(id: number) {
     });
   };
 
-  const writeComment = (
-    id: number,
-    content: string,
-    onSuccess: (data: any) => void
-  ) => {
+  const writeComment = (content: string, onSuccess: (data: any) => void) => {
     apiFetch(`/api/v1/posts/${id}/comments`, {
       method: "POST",
       body: JSON.stringify({
@@ -78,6 +70,7 @@ function usePostComments(id: number) {
   };
 
   return {
+    id,
     postComments,
     deleteComment,
     writeComment,
@@ -116,28 +109,12 @@ function PostInfo({ postState }: { postState: ReturnType<typeof usePost> }) {
   );
 }
 
-function PostCommentWriteAndList({
-  id,
+function PostCommentWrite({
   postCommentsState,
 }: {
-  id: number;
   postCommentsState: ReturnType<typeof usePostComments>;
 }) {
-  const {
-    postComments,
-    deleteComment: _deleteComment,
-    writeComment,
-  } = postCommentsState;
-
-  if (postComments == null) return <div>로딩중...</div>;
-
-  const deleteComment = (commentId: number) => {
-    if (!confirm(`${commentId}번 댓글을 정말로 삭제하시겠습니까?`)) return;
-
-    _deleteComment(id, commentId, (data) => {
-      alert(data.msg);
-    });
-  };
+  const { id, writeComment } = postCommentsState;
 
   const handleCommentWriteFormSubmit = (
     e: React.FormEvent<HTMLFormElement>
@@ -164,7 +141,7 @@ function PostCommentWriteAndList({
       return;
     }
 
-    writeComment(id, contentTextarea.value, (data) => {
+    writeComment(contentTextarea.value, (data) => {
       alert(data.msg);
       contentTextarea.value = "";
     });
@@ -172,7 +149,7 @@ function PostCommentWriteAndList({
 
   return (
     <>
-      <h2>댓글 작성</h2>
+      <h2>{id}번글에 대한 댓글 작성</h2>
 
       <form className="p-2" onSubmit={handleCommentWriteFormSubmit}>
         <textarea
@@ -186,10 +163,30 @@ function PostCommentWriteAndList({
           작성
         </button>
       </form>
+    </>
+  );
+}
 
-      <h2>댓글 목록</h2>
+function PostCommentList({
+  postCommentsState,
+}: {
+  postCommentsState: ReturnType<typeof usePostComments>;
+}) {
+  const { id, postComments, deleteComment: _deleteComment } = postCommentsState;
 
-      {postComments == null && <div>댓글 로딩중...</div>}
+  const deleteComment = (commentId: number) => {
+    if (!confirm(`${commentId}번 댓글을 정말로 삭제하시겠습니까?`)) return;
+
+    _deleteComment(commentId, (data) => {
+      alert(data.msg);
+    });
+  };
+
+  if (postComments == null) return <div>로딩중...</div>;
+
+  return (
+    <>
+      <h2>{id}번 글에 대한 댓글 목록</h2>
 
       {postComments != null && postComments.length == 0 && (
         <div>댓글이 없습니다.</div>
@@ -214,6 +211,20 @@ function PostCommentWriteAndList({
   );
 }
 
+function PostCommentWriteAndList({
+  postCommentsState,
+}: {
+  postCommentsState: ReturnType<typeof usePostComments>;
+}) {
+  return (
+    <>
+      <PostCommentWrite postCommentsState={postCommentsState} />
+
+      <PostCommentList postCommentsState={postCommentsState} />
+    </>
+  );
+}
+
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id: idStr } = use(params);
   const id = parseInt(idStr);
@@ -227,7 +238,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
       <PostInfo postState={postState} />
 
-      <PostCommentWriteAndList id={id} postCommentsState={postCommentsState} />
+      <PostCommentWriteAndList postCommentsState={postCommentsState} />
     </>
   );
 }
